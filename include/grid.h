@@ -2,8 +2,8 @@
 #define GRID_H
 
 typedef struct {
-    int size;   // Number of elements in a row
-    char *grid; // Pointer to the grid
+    int size;   // Nombre d'éléments dans un ligne
+    char **grid; // Tableau de pointeurs vers lignes
 } grid_t;
 
-#endif /* GRID_H *
+#endif /* GRID_H */

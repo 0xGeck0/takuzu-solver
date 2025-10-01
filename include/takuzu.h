@@ -4,4 +4,4 @@
 
 
 
-#endif /* TAKUZU_H *
+#endif /* TAKUZU_H */   

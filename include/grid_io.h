@@ -4,4 +4,4 @@
 
 
 
-#endif /* GRID_IO_H *
+#endif /* GRID_IO_H */

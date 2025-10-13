@@ -205,7 +205,7 @@ bool check_runs_cols(grid_t *g) {
     return true;
 }
 
-    // Règle n°3.1 : Au plus size/2 zéros et uns par ligne (même incomplète)
+    // Règle n°3.1 : Au plus size/2 de zéros et uns par ligne (même incomplète)
 
 bool check_nb_rows(grid_t *g) {
     if (!g || !g->grid || g->size <= 0) return true;
@@ -221,7 +221,7 @@ bool check_nb_rows(grid_t *g) {
             if (c == '0' ) zeros++;
             else if (c == '1') ones++;
         }
-        // Pas de dépassement de taille max.
+        // Pas de dépassement de la taille max.
         if (zeros > half || ones > half) return false;  
     }
     return true;

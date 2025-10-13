@@ -3,15 +3,14 @@
 CC       = gcc
 CFLAGS   = -std=c11 -Wall -Wextra
 CPPFLAGS = -I../include
-LDFLAGS  = 
 
 # Object files
 OBJS = grid.o grid_io.o takuzu.o
 
-# Binary to generate (at the project root)
+# Binary to generate
 BIN = ../takuzu
 
-# Declare phony targets (not real files)
+# Declare phony targets
 .PHONY: all clean test help
 
 # 1. all: compile all source files and generate takuzu binary
@@ -24,7 +23,7 @@ $(BIN): $(OBJS)
 clean:
 	rm -f $(OBJS) $(BIN)
 
-# 3. test: run your own tests (example)
+# 3. test: run my own tests
 test: all
 	@echo "Running takuzu test..."
 	@$(BIN) -h || true

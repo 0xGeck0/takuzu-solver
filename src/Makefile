@@ -5,7 +5,7 @@ CFLAGS   = -std=c11 -Wall -Wextra
 CPPFLAGS = -I../include
 
 # Object files
-OBJS = grid.o grid_io.o takuzu.o
+OBJS = grid.o grid_io.o takuzu.o heuristics.o
 
 # Binary to generate
 BIN = ../takuzu

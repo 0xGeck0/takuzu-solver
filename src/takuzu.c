@@ -7,14 +7,26 @@
 #include "grid.h"
 #include "grid_io.h"
 #include "takuzu.h"
+#include "heuristics.h"
 
 static bool is_allowed(int n) { return (n == 4 || n == 8 || n == 16 || n == 32 || n == 64);}
+
+// static int count_blanks(const grid_t *g) {      // Cette fonction static ne sert juste qu'à compter les blanks laissé après passage du solver.
+//     int n = g->size, blanks = 0;
+
+//     for (int i = 0; i < n; ++i)
+//         for (int j = 0; j < n; ++j)
+//             if (get_cell(i, j, (grid_t*)g) == '_') {
+//                 blanks++;
+//             }
+//     return blanks;
+// }
 
 static void print_usage(FILE *out) {
     fprintf(out,
         "Usage:\n"
-        "  takuzu [-a|-o FILE|-h] FILE\n"
-        "  takuzu -g[SIZE] [-u|-o FILE|-h]\n"
+        "  ./takuzu [-a|-o FILE|-h] FILE\n"
+        "  ./takuzu -g[SIZE] [-u|-o FILE|-h]\n"
         "Solve or generate takuzu grids of size: 4, 8, 16, 32, 64\n"
         "  -a, --all               search for all possible solutions\n"
         "  -g[N], --generate[=N]   generate a grid of size NxN (default: 8)\n"
@@ -66,7 +78,7 @@ int main(int argc, char *argv[]) {
                     char *end = NULL;
                     long n = strtol(optarg, &end, 10);
                     if (*end != '\0' || n <= 0) {
-                        fprintf(stderr, "takuzu: error: invalide grid size '%s'\n", optarg);
+                        fprintf(stderr, "takuzu: error: invalid grid size '%s'\n", optarg);
                         return(EXIT_FAILURE);
                     }
                     gsize = (int)n;
@@ -150,72 +162,44 @@ int main(int argc, char *argv[]) {
         // Solver mode : on parse le fichier d’entrée pour tester l’enchaînement
         grid_t g;
         file_parser(&g, infile);           // lit et remplit la grille
-        grid_print(&g, out);               // simple affichage pour vérif
+        if (!is_consistent(&g)) {
+            fprintf(stderr, "takuzu: error: grid is not consistent!\n");
+            grid_free(&g);
+            if (out != stdout) {
+                fclose(out);
+                return EXIT_FAILURE;
+            }
+        }
+
+        // Applique les heuristiques
+        apply_all_heuristics(&g);
+        grid_print(&g, out);
         grid_free(&g);
+
+    //     // Verdict avec affichage
+    //     int blanks = count_blanks(&g);
+    //     if (!is_consistent(&g)) {
+    //         fprintf(stderr, "takuzu: error: grid became inconsistent after solving.\n");
+    //         grid_free(&g);
+    //         if (out != stdout) {
+    //             fclose(out);
+    //             return EXIT_FAILURE;
+    //         }
+    //     }
+
+    //     if (blanks == 0) {
+    //         fprintf(out, "✅ Solved!\n");
+    //         grid_print(&g, out);
+    //     } else {
+    //         fprintf(out, "🟡 Partial solve (%d blanks remain)\n", blanks);
+    //         grid_print(&g, out);
+    //     }        
+    //     grid_free(&g);
+    
     }
 
-    if (out && out != stdout) fclose(out);
-    return EXIT_SUCCESS;
+    if (out != stdout) {
+        fclose(out);
+        return EXIT_SUCCESS;
+    }    
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// int main(void) {
-//     grid_t g;
-
-//     printf("== Test grid_allocate / grid_print ==\n");
-//     grid_allocate(&g, 8);
-//     grid_print(&g, stdout);
-
-//     printf("\n== Test set_cell / get_cell ==\n");
-//     set_cell(0, 0, &g, '1');
-//     set_cell(0, 1, &g, '0');
-//     set_cell(0, 2, &g, '1');
-//     set_cell(0, 3, &g, '0');
-//     printf("Row 0: ");
-//     for (int j = 0; j < g.size; j++)
-//         printf("%c ", get_cell(0, j, &g));
-//     printf("\n\n");
-
-//     printf("== Test règles Takuzu ==\n\n");
-//     printf("check_lines : %s\n", check_lines(&g) ? "OK" : "FAIL");
-//     printf("check_cols  : %s\n", check_cols(&g) ? "OK" : "FAIL");
-//     printf("check_runs_rows : %s\n", check_runs_rows(&g) ? "OK" : "FAIL");
-//     printf("check_nb_rows   : %s\n", check_nb_rows(&g) ? "OK" : "FAIL");
-//     printf("is_consistent   : %s\n", is_consistent(&g) ? "OK" : "FAIL");
-//     printf("is_valid        : %s\n", is_valid(&g) ? "OK" : "FAIL");
-
-//     grid_free(&g);
-//     return 0;
-// }

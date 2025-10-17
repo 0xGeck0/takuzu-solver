@@ -25,4 +25,4 @@ bool check_nb_cols(grid_t *g);
 bool is_consistent(grid_t *g);
 bool is_valid(grid_t *g);
 
-#endif /* GRID.H */
+#endif /* GRID_H */

@@ -1,0 +1,6 @@
+# Consistent grid, several solutions (7)
+_ _ _ _ _
+_ _ _ _ _
+_ _ _ _ _
+_ _ _ _ _
+_ _ _ _ _

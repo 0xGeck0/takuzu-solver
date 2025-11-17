@@ -13,15 +13,8 @@ typedef struct {
 void grid_allocate(grid_t *g, int size);
 void grid_free(const grid_t *g);
 void grid_print(const grid_t *g, FILE *fd);
-bool check_char(const char c);
 void set_cell(int i, int j, grid_t *g, char v);
 char get_cell(int i, int j, grid_t *g);
-bool check_lines(grid_t *g);
-bool check_cols(grid_t *g);
-bool check_runs_rows(grid_t *g);
-bool check_runs_cols(grid_t *g);
-bool check_nb_rows(grid_t *g);
-bool check_nb_cols(grid_t *g);
 bool is_consistent(grid_t *g);
 bool is_valid(grid_t *g);
 

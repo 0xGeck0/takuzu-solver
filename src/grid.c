@@ -24,7 +24,9 @@ void grid_allocate(grid_t *g, int size) {
             exit(EXIT_FAILURE);
         }
     // On initialise la grille avec des '_' car notre get_cell refuse '\0'.
-    for (int j = 0; j < size; j++) g->grid[i][j] = '_';
+    for (int j = 0; j < size; j++) {
+        g->grid[i][j] = '_';
+    }
     }
 }
 
@@ -40,16 +42,18 @@ void grid_print(const grid_t *g, FILE *fd) {
     for (int i = 0; i < size; i++) {
         for (int j = 0; j < size; j++) {
             char c = g->grid[i][j];
-            if (j + 1 == size)
+            if (j + 1 == size) {
                 fprintf(fd, "%c", c);
-            else
+            }
+            else {
                 fprintf(fd, "%c ", c);      // espace comme séprateur après remarque pour un meilleur rendu
+            }
         }
         fputs("\n", fd);
     }
 }
 
-bool check_char(const char c) {
+static bool check_char(const char c) {
     return (c == '0' || c == '1' || c == '_');
 }
 
@@ -82,8 +86,10 @@ char get_cell(int i, int j, grid_t *g) {
 
     // Règle n°1.1 : Pas de lignes identiques
 
-bool check_lines(grid_t *g) {
-    if (!g || !g->grid || g->size <= 0) return true;
+static bool check_lines(grid_t *g) {
+    if (!g || !g->grid || g->size <= 0) {
+        return true;
+    }
 
     for (int i = 0; i < g->size -1; i++) {
         for (int j = i + 1; j < g->size; j++) {
@@ -115,8 +121,10 @@ bool check_lines(grid_t *g) {
 
     // Règle n°1.2 : Pas de colonnes identiques
 
-bool check_cols(grid_t *g) {
-    if (!g || !g->grid || g->size <= 0) return true;
+static bool check_cols(grid_t *g) {
+    if (!g || !g->grid || g->size <= 0) {
+        return true;
+    }
 
     for (int col = 0; col < g->size - 1; col++) {
         for (int other = col + 1; other < g->size; other++) {
@@ -146,8 +154,10 @@ bool check_cols(grid_t *g) {
 
     // Règle n°2.1 : Pas plus de deux 0/1 consécutifs sur les lignes
 
-bool check_runs_rows(grid_t *g) {
-    if (!g || !g->grid || g->size <= 0) return true;
+static bool check_runs_rows(grid_t *g) {
+    if (!g || !g->grid || g->size <= 0) {
+        return true;
+    }
 
     // last = dernière valeur lue ('0' ou '1') et run = longueur de la série
     for (int i = 0; i < g->size; i++) {
@@ -164,7 +174,9 @@ bool check_runs_rows(grid_t *g) {
 
             if (c == last) {    // check l'élément précédent
                 run++;
-                if (run >= 3) return false;  // 3 identiques consécutifs -> faux
+                if (run >= 3) {
+                    return false;  // 3 identiques consécutifs -> faux
+                }
             } else {
                 last = c;
                 run = 1;
@@ -177,8 +189,10 @@ bool check_runs_rows(grid_t *g) {
     // Règle n°2.2 : Pas plus de deux 0/1 consécutifs sur les colonnes
 
 
-bool check_runs_cols(grid_t *g) {
-    if (!g || !g->grid || g->size <= 0) return true;
+static bool check_runs_cols(grid_t *g) {
+    if (!g || !g->grid || g->size <= 0) {
+        return true;
+    }
 
 // last = dernière valeur lue ('0' ou '1') et run = longueur de la série
     for (int j = 0; j < g->size; j++) {
@@ -195,7 +209,9 @@ bool check_runs_cols(grid_t *g) {
 
             if (c == last) {    // check l'élément précédent
                 run++;
-                if (run >= 3) return false;  // 3 identiques consécutifs -> faux
+                if (run >= 3) {
+                    return false;  // 3 identiques consécutifs -> faux
+                }
             } else {
                 last = c;
                 run = 1;
@@ -207,8 +223,10 @@ bool check_runs_cols(grid_t *g) {
 
     // Règle n°3.1 : Au plus size/2 de zéros et uns par ligne (même incomplète)
 
-bool check_nb_rows(grid_t *g) {
-    if (!g || !g->grid || g->size <= 0) return true;
+static bool check_nb_rows(grid_t *g) {
+    if (!g || !g->grid || g->size <= 0) {
+        return true;
+    }
 
     int size = g->size; int half = size / 2;
 
@@ -218,19 +236,28 @@ bool check_nb_rows(grid_t *g) {
         for (int j = 0; j < size; j++) {
             char c = get_cell(i, j, g);
 
-            if (c == '0' ) zeros++;
-            else if (c == '1') ones++;
+            if (c == '0' ) {
+                zeros++;
+            } else { 
+                if (c == '1') {
+                    ones++;
+                }
+            }
         }
         // Pas de dépassement de la taille max.
-        if (zeros > half || ones > half) return false;  
+        if (zeros > half || ones > half) {
+            return false;
+        }
     }
     return true;
 }
 
     // Règle n°3.2 : Pas plus de 0 et 1 par colonne que la moitié de la taille d'une colonne.
 
-bool check_nb_cols(grid_t *g) {
-    if (!g || !g->grid || g->size <= 0) return true;
+static bool check_nb_cols(grid_t *g) {
+    if (!g || !g->grid || g->size <= 0) {
+        return true;
+    }
 
     int size = g->size; int half = size / 2;
 
@@ -240,34 +267,57 @@ bool check_nb_cols(grid_t *g) {
         for (int row = 0; row < size; row++) {
             char c = get_cell(row, col, g);
 
-            if (c == '0' ) zeros++;
-            else if (c == '1') ones++;
+            if (c == '0' ) {
+                zeros++;
+            } else {
+                if (c == '1') {
+                    ones++;
+                }
+            }
         }
         // Pas de dépassement de taille max.
-        if (zeros > half || ones > half) return false;  
+        if (zeros > half || ones > half) {
+            return false;  
+        }
     }
     return true;
 }
 
 bool is_consistent(grid_t *g) {
-    if (!g || !g->grid || g->size <= 0) return true;
+    if (!g || !g->grid || g->size <= 0) {
+        return true;
+    }
     
-    if (!check_lines(g) || !check_cols(g)) return false;            // Règle n°1  
-    if (!check_runs_cols(g) || !check_runs_rows(g)) return false;   // Règle n°2
-    if (!check_nb_rows(g) || !check_nb_cols(g)) return false;       // Règle n°3
+    // Règle n°1
+    if (!check_lines(g) || !check_cols(g)) {
+        return false;  
+    }
+    // Règle n°2
+    if (!check_runs_cols(g) || !check_runs_rows(g)) {
+        return false;
+    }
+
+    // Règle n°3
+    if (!check_nb_rows(g) || !check_nb_cols(g)) {
+        return false; 
+    }      
     
     return true;    // Si toutes les conditions sont vérifiées, renvoie True.
 
 }
 
 bool is_valid(grid_t *g) {
-    if (!g || !g->grid || g->size <= 0) return false;
+    if (!g || !g->grid || g->size <= 0) {
+        return false;
+    }
 
     int size = g->size;
 
     for (int i = 0; i < size; i++) {
         for (int j = 0; j < size; j++) {
-            if (get_cell(i, j, g) == '_') return false;
+            if (get_cell(i, j, g) == '_') {
+                return false;   
+            }
         }
     }
     return is_consistent(g);

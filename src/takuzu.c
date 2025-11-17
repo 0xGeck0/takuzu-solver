@@ -16,13 +16,16 @@ static bool is_allowed(int n) { return (n == 4 || n == 8 || n == 16 || n == 32 |
 static int count_blanks(const grid_t *g) {      // Cette fonction static ne sert juste qu'à compter les blanks laissé après passage du solver.
     int n = g->size, blanks = 0;
 
-    for (int i = 0; i < n; ++i)
-        for (int j = 0; j < n; ++j)
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < n; ++j) {
             if (get_cell(i, j, (grid_t*)g) == '_') {
                 blanks++;
             }
+        }
+    }
     return blanks;
 }
+
 
 static void print_usage(FILE *out) {
     fprintf(out,
@@ -156,6 +159,13 @@ int main(int argc, char *argv[]) {
             return EXIT_FAILURE;
         }
 
+        // Conflit si -g ET un fichier d'entrée sont donnés
+        if (infile) {
+            fprintf(stderr, "takuzu: error: generator mode (-g) conflicts with input file '%s'\n", infile);
+            print_usage(stderr); // On rappelle l'usage
+            return EXIT_FAILURE;
+        }
+
         // OK avec -u
     } else {
         // Nous sommes en mode solver donc conflit avec -u
@@ -169,7 +179,7 @@ int main(int argc, char *argv[]) {
             fprintf(stderr, "takuzu: error: no input grid given!");
             return EXIT_FAILURE;
         }
-    }
+    }   
 
     // 2) -o : gestion du fichier de sortie
     FILE *out = stdout;
@@ -190,15 +200,19 @@ int main(int argc, char *argv[]) {
 
     } else {
         // Solver mode : on parse le fichier d’entrée pour tester l’enchaînement
-        grid_t g;
+        grid_t g = {0};
         file_parser(&g, infile);           // lit et remplit la grille
         if (!is_consistent(&g)) {
-            fprintf(stderr, "takuzu: error: grid is not consistent!\n");
-            grid_free(&g);
             if (out != stdout) {
+                // Si -o FILE est utilisé, on écrit l'erreur DANS le fichier en commentaire "#"
+                fprintf(out, "# The input grid is inconsistent.\n");
                 fclose(out);
+            } else {
+                // Sinon on affiche que la grille n'est pas consistente sur la sortie
+                fprintf(stdout, "# The input grid is inconsistent.\n");
             }
-            return EXIT_FAILURE;
+            grid_free(&g);
+            return EXIT_SUCCESS;
         }
 
         // Applique les heuristiques
@@ -216,10 +230,10 @@ int main(int argc, char *argv[]) {
         }   
 
         if (blanks == 0) {
-            fprintf(out, "✅ Solved!\n");
+            fprintf(out, "Solved!\n");
             grid_print(&g, out);
         } else {
-            fprintf(out, "🟡 Partial solve (%d blanks remain)\n", blanks);
+            fprintf(out, "Partial solve (%d blanks remain)\n", blanks);
             grid_print(&g, out);
         }        
         grid_free(&g);

@@ -5,8 +5,6 @@
 #include "grid_io.h"
 #include "grid.h"
 
-#define MAX_GRID_SIZE 64 // Borne haute pour la taille de la grille
-
 // Retourne vrai si la taille (nb de colonnes) est autorisée
 static bool is_allowed_size(int n) { return (n == 4 || n == 8 || n == 16 || n == 32 || n == 64);}
 
@@ -19,13 +17,23 @@ static int is_sig(int c) { return (c == '0' || c == '1' || c == '_'); }
 
 // Affiche un message d’erreur standardisé, nettoie et quitte le programme.
 static void errors_exit(FILE *f, grid_t *g, char *filename, int line, char *msg) {
-    if (line > 0)
+    if (line > 0) {
         fprintf(stderr, "takuzu: error: '%s': %s at line %d!\n", filename, msg, line);
-    else
+    } else {
         fprintf(stderr, "takuzu: error: '%s': %s\n", filename, msg);
-    if (f) fclose(f);                   // Ferme le fichier si ouvert
-    if (g && g->grid) grid_free(g);     // Libère la grille si allouée
-    exit(EXIT_FAILURE);                 // Termine avec error
+    }
+
+    // Ferme le fichier si ouvert
+    if (f) {
+        fclose(f);
+    }       
+    
+    // Libère la grille si allouée
+    if (g && g->grid) {
+        grid_free(g);
+    }    
+
+    exit(EXIT_FAILURE); // Termine avec error
 }
 
 
@@ -58,7 +66,9 @@ void file_parser(grid_t *g, char *filename) {
 
         // Coupe la ligne au 1er '#' : tout ce qui suit est du commentaire
         for (char *p = buffer; *p; ++p) {
-            if (*p == '#') { *p = '\0'; break; }
+            if (*p == '#') {
+                *p = '\0'; break;
+            }
         }
 
         int  sig_count = 0;                 // Nb de caractères significatifs trouvés sur la ligne lue.
@@ -69,7 +79,10 @@ void file_parser(grid_t *g, char *filename) {
         for (char *p = buffer; *p; ++p) {
             unsigned char c = (unsigned char)*p;
 
-            if (c == '\n') break;  // fin de la ligne
+            // fin de la ligne
+            if (c == '\n') {
+                break;
+            }  
 
             if (is_sep(c)) {
                 // On vient de voir un séparateur alors on autorise un nouveau caractère significatif
@@ -104,7 +117,9 @@ void file_parser(grid_t *g, char *filename) {
         }
 
         // Pour une ligne vide, on passe.
-        if (sig_count == 0) continue;
+        if (sig_count == 0) {
+            continue;
+        }
 
 
         // Première ligne significative : on fixe la taille et on alloue la grille.

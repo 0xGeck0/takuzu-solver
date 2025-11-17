@@ -5,8 +5,6 @@
 #include "generate.h"
 #include "grid.h"
 
-#define MAX_FIND_RETRIES 20     // Sécurité pour ne pas boucler à l'infini
-
 void generate_grid(grid_t *g, int size, int percentage) {
 
     // 1. Allocation de la grille
@@ -14,8 +12,13 @@ void generate_grid(grid_t *g, int size, int percentage) {
 
     // Calcule du ratio, car l'utilisateur donnera un int
     double fill_ratio = (double)percentage / 100.0;
-    if (fill_ratio < 0.0) fill_ratio = 0.0;
-    if (fill_ratio > 1.0) fill_ratio = 1.0;
+    if (fill_ratio < 0.0) {
+        fill_ratio = 0.0;
+    }
+
+    if (fill_ratio > 1.0) {
+        fill_ratio = 1.0;
+    }
 
     int total_cells = size * size;
     int cells_to_fill = (int)(total_cells * fill_ratio);
@@ -32,11 +35,15 @@ void generate_grid(grid_t *g, int size, int percentage) {
             j = rand() % size;
 
             // On crée une sécurité si on ne trouve pas de case vide
-            if (retries++ > MAX_FIND_RETRIES) break;
-        } while (get_cell(i, j, g) != '_');
+            if (retries++ > MAX_FIND_RETRIES) {
+                break;
+            }
+        } while (get_cell(i, j, g) != '_') ;
         
         // Puisque do {} while tourne au moins une fois, on regarde si la sécurité s'est activée
-        if (get_cell(i, j, g) != '_') continue;
+        if (get_cell(i, j, g) != '_') {
+            continue;
+        }
 
         // 3. Choix d'un symbole aléatoire ('0' ou '1')
         char char1 = (rand() % 2 == 0) ? '0' : '1';

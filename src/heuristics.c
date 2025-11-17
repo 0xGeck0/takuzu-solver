@@ -5,7 +5,7 @@
 
 static char opp(char c) { return (c == '0') ? '1' : '0'; }
 
-bool apply_double_rule(grid_t *g) {     // Heuristique 1 : La règle du double
+static bool apply_double_rule(grid_t *g) {     // Heuristique 1 : La règle du double
 
     bool changed = false;   // Pour savoir si on change un truc ou pas dans la grille
     int n = g->size;
@@ -17,7 +17,9 @@ bool apply_double_rule(grid_t *g) {     // Heuristique 1 : La règle du double
             char b = get_cell(i, j + 1, g);
 
             // On va ignorer les cases vides pour cette règle
-            if (a == '_' || b == '_') continue;
+            if (a == '_' || b == '_') {
+                continue;
+            }
 
             // Si on a deux cases consécutives identiques
             if (a == b) {
@@ -72,7 +74,7 @@ bool apply_double_rule(grid_t *g) {     // Heuristique 1 : La règle du double
 }
 
 
-bool apply_full_rule(grid_t *g) {       // Heuristique 2 : La règle du full
+static bool apply_full_rule(grid_t *g) {       // Heuristique 2 : La règle du full
     bool changed = false;
     int n = g->size;
     int half = n / 2;
@@ -83,8 +85,13 @@ bool apply_full_rule(grid_t *g) {       // Heuristique 2 : La règle du full
         for (int j = 0; j < n; j++) {
             char c = get_cell(i, j, g);
 
-            if (c == '0') zeros++;
-            else if (c == '1') ones++;
+            if (c == '0') {
+                zeros++;
+            } else {
+                if (c == '1') {
+                    ones++;
+                }
+            }
         }
 
         if (zeros == half) {
@@ -111,8 +118,13 @@ bool apply_full_rule(grid_t *g) {       // Heuristique 2 : La règle du full
         int zeros = 0, ones = 0;
         for (int i = 0; i < n; i++) {
             char c = get_cell(i, j, g);
-            if (c == '0') zeros++;
-            else if (c == '1') ones++;
+            if (c == '0') {
+                zeros++;
+            } else {
+                 if (c == '1') {
+                    ones++;
+                 }
+            }
         }
         if (zeros == half) {
             for (int i = 0; i < n; i++) {
@@ -135,7 +147,7 @@ bool apply_full_rule(grid_t *g) {       // Heuristique 2 : La règle du full
 }    
 
 
-bool apply_sandwich_rule(grid_t *g) {   // Heuristique 3 : La règle du sandwich, 1 _ 1 ou 0 _ 0.
+static bool apply_sandwich_rule(grid_t *g) {   // Heuristique 3 : La règle du sandwich, 1 _ 1 ou 0 _ 0.
     bool changed = false;
     int n = g->size;
 

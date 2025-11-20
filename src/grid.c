@@ -321,4 +321,28 @@ bool is_valid(grid_t *g) {
         }
     }
     return is_consistent(g);
-}   
+}
+
+void grid_copy(const grid_t *gs, grid_t *gd) {
+    if (!gs || !gs->grid || !gd) {
+        return;
+    }
+
+    // Si gd est déjà alloué mais avec une taille différente, on nettoie tout
+    if (gd->grid && gd->size != gs->size) {
+        grid_free(gd);
+        gd->grid = NULL;
+    }
+
+    // Si gd n'est pas alloué (ou vient d'être libérée), on l'alloue
+    if (!gd->grid) {
+        grid_allocate(gd, gs->size);
+    }
+
+    // Deep copy des valeurs
+    for (int i = 0; i < gs->size; i++) {
+        for (int j = 0; j < gs->size; j++) {
+            gd->grid[i][j] = gs->grid[i][j];
+        }
+    }
+}

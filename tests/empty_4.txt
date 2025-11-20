@@ -1,0 +1,5 @@
+# Une grille vide 4x4 : Backtracking pur obligatoire
+_ _ _ _
+_ _ _ _
+_ _ _ _
+_ _ _ _

@@ -1,0 +1,5 @@
+# Grille 4x4 impossible (Piege : Ligne 1 et 4 deviendront identiques)
+1 1 0 0
+_ _ _ _
+_ _ _ _
+1 1 _ _

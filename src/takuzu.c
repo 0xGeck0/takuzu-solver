@@ -10,22 +10,9 @@
 #include "takuzu.h"
 #include "heuristics.h"
 #include "generate.h"
+#include "solver.h"
 
 static bool is_allowed(int n) { return (n == 4 || n == 8 || n == 16 || n == 32 || n == 64);}
-
-static int count_blanks(const grid_t *g) {      // Cette fonction static ne sert juste qu'à compter les blanks laissé après passage du solver.
-    int n = g->size, blanks = 0;
-
-    for (int i = 0; i < n; ++i) {
-        for (int j = 0; j < n; ++j) {
-            if (get_cell(i, j, (grid_t*)g) == '_') {
-                blanks++;
-            }
-        }
-    }
-    return blanks;
-}
-
 
 static void print_usage(FILE *out) {
     fprintf(out,
@@ -215,29 +202,35 @@ int main(int argc, char *argv[]) {
             return EXIT_SUCCESS;
         }
 
-        // Applique les heuristiques
-        apply_all_heuristics(&g);
+        long count = 0;
 
-        // Verdict avec affichage
-        int blanks = count_blanks(&g);
-        if (!is_consistent(&g)) {
-            fprintf(stderr, "takuzu: error: grid became inconsistent after solving.\n");
-            grid_free(&g);
-            if (out != stdout) {
-                fclose(out);
-            return EXIT_FAILURE;
-            }
-        }   
+        // On appelle le solver avec les nouveaux paramètres :
+        // - all : le bool qui nous dit si on veut tout chercher
+        // - &count : pour compter les solutions trouvées
+        // - out : pour afficher les solutions au fur et à mesure (si mode all)
+        grid_t *solution = grid_solver(&g, all, &count, out);
 
-        if (blanks == 0) {
-            fprintf(out, "Solved!\n");
-            grid_print(&g, out);
+        if (all) {
+            // Mode "Toutes les solutions" -a
+            // Le solveur a déjà affiché les grilles trouvées.
+            // On affiche juste le total à la fin.
+            fprintf(out, "Number of solutions: %ld\n", count);
+
+            // Note : ici 'solution' est NULL car le solveur explore tout jusqu'à l'épuisement
         } else {
-            fprintf(out, "Partial solve (%d blanks remain)\n", blanks);
-            grid_print(&g, out);
-        }        
+            // Mode "Une seule solution" (par défaut)
+            if (solution) {
+                fprintf(out, "Solved!\n");
+                grid_print(solution, out);
+
+                grid_free(solution);
+                free(solution);
+            } else {
+                fprintf(stderr, "takuzu: error: no solution found!\n");
+            }
+        }
         grid_free(&g);
-    }
+    }   
 
     if (out != stdout) {
         fclose(out);

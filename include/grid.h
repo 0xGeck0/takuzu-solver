@@ -17,5 +17,6 @@ void set_cell(int i, int j, grid_t *g, char v);
 char get_cell(int i, int j, grid_t *g);
 bool is_consistent(grid_t *g);
 bool is_valid(grid_t *g);
+void grid_copy(const grid_t *gs, grid_t *gd);
 
 #endif /* GRID_H */

@@ -181,7 +181,7 @@ int main(int argc, char *argv[]) {
 
     if (generator_mode) {
         grid_t g;
-        generate_grid(&g, gsize, percentage); // On appelle notre fonction
+        generate_grid(&g, gsize, percentage, unique); // On appelle notre fonction
         grid_print(&g, out);                  // On affiche la grille générée
         grid_free(&g);                        // On libère la mémoire
 
@@ -226,7 +226,7 @@ int main(int argc, char *argv[]) {
                 grid_free(solution);
                 free(solution);
             } else {
-                fprintf(stderr, "takuzu: error: no solution found!\n");
+                fprintf(stderr, "takuzu: no solution found!\n");
             }
         }
         grid_free(&g);

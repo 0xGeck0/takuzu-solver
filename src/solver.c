@@ -32,7 +32,7 @@ choice_t grid_choice(grid_t *grid) {
             if (get_cell(i, j, grid) == '_') {
                 c.row = i;
                 c.column = j;
-                c.choice = '0';
+                c.choice = (rand() % 2) ? '0' : '1';
                 return c;
             }
         }

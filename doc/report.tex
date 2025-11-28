@@ -1,0 +1,55 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+% On évite babel french pour garantir la compilation sur toutes les machines
+% \usepackage[french]{babel} 
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{geometry}
+\geometry{hmargin=2.5cm,vmargin=2cm}
+
+\title{\textbf{Project Report: Takuzu Solver \& Generator}}
+\author{Alexandre ACCIARI - Master Cryptographie}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+\newpage
+
+\section{Introduction}
+This project implements a complete tool for the Takuzu logic game in C language. It allows users to solve grids of varying sizes, generate valid new grids, and verify their uniqueness.
+
+\section{Implemented Heuristics}
+To solve grids efficiently, we implemented three logical deduction heuristics in \texttt{src/heuristics.c}:
+\begin{itemize}
+    \item \textbf{Rule 1 (Doubles):} Forbidden to have three identical consecutive digits.
+    \item \textbf{Rule 2 (Sandwich):} If two identical digits are separated by an empty cell, the middle one must be the opposite.
+    \item \textbf{Rule 3 (Parity):} Rows and columns must contain an equal number of \texttt{0}s and \texttt{1}s.
+\end{itemize}
+
+\section{Grid Generation Algorithm (Subtask 3)}
+Grid generation (\texttt{src/generate.c}) uses a hybrid approach to balance performance and randomness.
+
+\subsection{Strategy for Small Grids (4x4, 8x8)}
+We rely on a backtracking solver with randomized choices. Starting from an empty grid, it quickly finds a valid solution without external guidance.
+
+\subsection{Strategy for Large Grids (16x16 and above)}
+To avoid combinatorial explosion on large empty grids, we utilize an optimization: \textbf{Row 0 Pre-filling}. We generate a valid pattern (e.g., \texttt{0011...}) randomly shifted on the first row. This provides a "backbone" for the solver, ensuring instant generation even for 32x32 grids.
+
+\subsection{Known Limitations}
+While our hybrid approach allows instantaneous generation for grids up to 64x64, we identified an intrinsic limitation related to the combinatorial complexity of the problem.
+
+Generating very large grids (32x32, 64x64) that are purely random remains a significant algorithmic challenge. Our current method prioritizes execution speed and validity, at the cost of some regularity imposed by the initial pattern on the first row.
+Achieving a purely uniform random distribution for sizes 16x16 and above without this "guide" would require more advanced techniques (such as genetic algorithms or optimized constraint propagation), as simple backtracking reaches its limits when facing the exponential explosion of the search space.
+
+\section{Code Quality}
+Special attention was paid to source code quality:
+\begin{itemize}
+    \item \textbf{Modularity:} Clear separation of responsibilities (\texttt{grid}, \texttt{io}, \texttt{solver}).
+    \item \textbf{Memory Management:} No memory leaks (rigorous use of allocate/free).
+    \item \textbf{Robustness:} Handling of input errors and edge cases.
+\end{itemize}
+
+\end{document}

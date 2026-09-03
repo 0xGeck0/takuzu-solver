@@ -1,5 +1,12 @@
-.vscode
+# Fichiers objets et exécutables
+*.o
 prog
 programme.c
-*.o
-coms&trails
+
+# Fichier log LATEX
+*.aux
+*.log
+*.toc
+
+# Dossiers de configuration de l'éditeur
+.vscode/

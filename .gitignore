@@ -18,3 +18,9 @@ programme.c
 /takuzu
 *.o
 .vscode/
+*.aux
+*.log
+*.toc
+*.out
+/takuzu
+*.o

@@ -19,7 +19,7 @@ clean:
 	@echo "Cleaning build files..."
 	@$(MAKE) -C src clean
 	@rm -f ./takuzu
-	@rm -f doc/*.aux doc/*.log doc/*.out doc/*.toc doc/*.pdf
+	@rm -f doc/*.aux doc/*.log doc/*.out doc/*.toc
 
 # test : runs a quick 	test
 test: all

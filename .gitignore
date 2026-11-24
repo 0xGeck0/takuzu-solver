@@ -9,4 +9,11 @@ programme.c
 *.toc
 
 # Dossiers de configuration de l'éditeur
-.vscode/
+.vscode/# Fichiers temporaires LaTeX
+*.aux
+*.log
+*.toc
+*.out
+# Exécutable compilé
+/takuzu
+*.o

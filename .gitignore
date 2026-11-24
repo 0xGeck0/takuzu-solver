@@ -17,3 +17,4 @@ programme.c
 # Exécutable compilé
 /takuzu
 *.o
+.vscode/
